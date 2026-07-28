@@ -1,0 +1,100 @@
+/* ── 폰트 (오픈 라이선스만) — @import는 반드시 최상단 ─────────── */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* 한글 본문·헤드라인 / 영문·숫자·라벨 분리 */
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 간격 스케일 (hut8 토큰 구조 참고 — 11단계 고정) */
+  --spacing-s1: 16px;
+  --spacing-s2: 24px;
+  --spacing-s3: 32px;
+  --spacing-s4: 48px;
+  --spacing-s5: 64px;
+  --spacing-s6: 72px;
+  --spacing-s7: 96px;
+  --spacing-s8: 128px;
+  --spacing-s9: 144px;
+  --spacing-s10: 168px;
+  --spacing-s11: 196px;
+
+  /* 모션 이징 */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-hut8: cubic-bezier(0.2, 0, 0.8, 1);
+}
+
+/* ── 전역 기본값 ───────────────────────────────────────── */
+:root {
+  --grid-max: 1600px;
+  --grid-pad: 24px;
+  --grid-gutter: 24px;
+  --grid-columns: 8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  /* 한글은 음수 자간을 크게 주면 자소가 붙어 읽기 어렵다 */
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 영문·숫자·라벨용 유틸 — 자간을 더 좁게 */
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 영문 대형 헤드라인용 — 한글보다 자간을 더 좁힌다 */
+.tight-en {
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.tight-ko {
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* ── 접근성: 모션 축소 ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* 컨셉 컴포넌트가 공통으로 쓰는 컨테이너 */
+.shell {
+  width: 100%;
+  max-width: var(--grid-max);
+  margin-inline: auto;
+  padding-inline: var(--grid-pad);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --grid-pad: 16px;
+  }
+}
