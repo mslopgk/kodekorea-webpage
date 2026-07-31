@@ -81,7 +81,11 @@ export const pillars = [
        * 나머지 3개 사이트는 시안 단계라 발주처 승인 전 공개 불가.
        */
       images: [
-        { src: '/work/arise-hero.jpg', alt: 'ARISE-AI 거점 사이트 히어로 영상 장면', caption: '거점 메인 · 운영 중' },
+        {
+          src: '/work/arise-hero.jpg',
+          alt: 'ARISE-AI 거점 사이트 히어로 화면',
+          caption: '거점 메인 · 운영 중',
+        },
         { src: '/work/arise-layout.jpg', alt: 'ARISE-AI 거점 사이트 게이트웨이 화면', caption: '게이트웨이 구조' },
       ],
       metrics: [

@@ -448,3 +448,13 @@
 @media (prefers-reduced-motion: reduce) {
   .v2-shot:hover img { transform: none; }
 }
+
+
+/* 스크롤 리프레임되는 프레임 — 확대분은 프레임이 잘라낸다 (overflow:hidden) */
+.v2-shot--motion {
+  will-change: transform;
+}
+/* 스크럽 중에는 hover 확대를 끈다 — 두 변형이 겹치면 튄다 */
+.v2-shot--motion:hover img {
+  transform: none;
+}

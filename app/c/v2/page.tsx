@@ -13,6 +13,7 @@ import {
 } from '@/content/site';
 import { HeroField } from './HeroField';
 import { Plate } from './Plate';
+import { Choreo } from './Choreo';
 import { Dashboard } from './Dashboard';
 import { Signal } from './live';
 import { BigNumber, Rev, Wipe } from './parts';
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
 export default function V2() {
   return (
     <div className="v2">
+      <Choreo />
       <header className="v2-top">
         <a className="v2-mark" href="#top">
           {company.nameKo}
@@ -147,7 +149,10 @@ export default function V2() {
                 {'images' in p.project && p.project.images.length > 0 ? (
                   <div className="v2-shots">
                     {p.project.images.map((im) => (
-                      <figure className="v2-shot" key={im.src}>
+                      <figure className="v2-shot v2-shot--motion" key={im.src}>
+                        {/* 정지 이미지 + 스크롤 켄번즈. 영상 태그는 쓰지 않는다 —
+                            검증 환경에서 디코드가 렌더러를 얼려 확인이 불가능했고,
+                            확인하지 못한 것은 싣지 않는다. 켄번즈만으로도 살아 있게 읽힌다. */}
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={im.src} alt={im.alt} loading="lazy" />
                         <figcaption>{im.caption}</figcaption>
@@ -185,7 +190,7 @@ export default function V2() {
               <div>
                 <p className="v2-code">{workLog.labelEn.toUpperCase()}</p>
                 <h2 className="v2-evi__name">
-                  <Wipe>{'진행 상황'}</Wipe>
+                  <Wipe>{workLog.labelKo}</Wipe>
                 </h2>
               </div>
             </div>
