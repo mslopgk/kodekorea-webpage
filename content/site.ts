@@ -75,6 +75,15 @@ export const pillars = [
       role: '전체 수행 (기획·디자인·구축·운영)',
       body:
         '대학의 AI 교육·연구 조직 4개 사이트를 하나의 정보구조로 통합 구축하고 있습니다. 거점 메인은 개발을 마치고 운영 중이며 관리자 통계 기능까지 추가 납품했습니다. 나머지는 시안 확정 단계로, 조직별 특성을 살리되 거점 전체가 한 브랜드로 읽히도록 설계했습니다.',
+      /**
+       * 실제 캡처. `arise-ai.pusan.ac.kr`은 공개 운영 중이라 직접 촬영했다.
+       * hero는 사이트 자체의 히어로 영상 프레임, layout은 페이지 화면.
+       * 나머지 3개 사이트는 시안 단계라 발주처 승인 전 공개 불가.
+       */
+      images: [
+        { src: '/work/arise-hero.jpg', alt: 'ARISE-AI 거점 사이트 히어로 영상 장면', caption: '거점 메인 · 운영 중' },
+        { src: '/work/arise-layout.jpg', alt: 'ARISE-AI 거점 사이트 게이트웨이 화면', caption: '게이트웨이 구조' },
+      ],
       metrics: [
         { value: '4', unit: '개', label: '통합 구축 사이트', source: '발주처 확인 메일' },
         { value: '1', unit: '개', label: '개발 완료 · 운영 중', source: '2026-07-08 추가 납품' },

@@ -410,3 +410,41 @@
     animation: none !important;
   }
 }
+
+
+/* 실제 캡처 전시 — 액자로 두르지 않고 1px 보더로 로그 톤을 유지한다 */
+.v2-shots { display: grid; gap: 10px; }
+@media (min-width: 860px) {
+  .v2-shots { grid-template-columns: 1.55fr 1fr; align-items: start; }
+}
+.v2-shot {
+  margin: 0;
+  border: 1px solid var(--rule);
+  background: #08080a;
+  position: relative;
+  overflow: hidden;
+}
+.v2-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.92) contrast(1.03);
+  transition: transform 0.7s var(--ease-out-quint), filter 0.5s;
+}
+.v2-shot:hover img { transform: scale(1.02); filter: saturate(1) contrast(1.06); }
+.v2-shot figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 7px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(to top, rgba(8, 8, 10, 0.92), transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .v2-shot:hover img { transform: none; }
+}

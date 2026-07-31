@@ -142,7 +142,21 @@ export default function V2() {
               </div>
 
               <div style={{ position: 'relative' }}>
-                <Plate kind={p.id as 'public' | 'education' | 'platform'} seed={7 + i * 13} />
+                {/* 실제 캡처가 있으면 캡처를, 없으면 절차적 도면을 쓴다.
+                    승인 전인 프로젝트는 이미지를 넣을 수 없으므로 이 분기가 필요하다. */}
+                {'images' in p.project && p.project.images.length > 0 ? (
+                  <div className="v2-shots">
+                    {p.project.images.map((im) => (
+                      <figure className="v2-shot" key={im.src}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={im.src} alt={im.alt} loading="lazy" />
+                        <figcaption>{im.caption}</figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                ) : (
+                  <Plate kind={p.id as 'public' | 'education' | 'platform'} seed={7 + i * 13} />
+                )}
                 {/* 대표 수치를 도면 위에 크게 겹친다 — 카드 안에 갇히지 않게 */}
                 <BigNumber
                   value={p.project.metrics[0].value}
