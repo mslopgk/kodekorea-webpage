@@ -9,11 +9,15 @@ import {
   heroVerbs,
   nav,
   pillars,
+  workLog,
 } from '@/content/site';
 import { HeroField } from './HeroField';
 import { Plate } from './Plate';
+import { Dashboard } from './Dashboard';
+import { Signal } from './live';
 import { BigNumber, Rev, Wipe } from './parts';
 import './v2.css';
+import './dash.css';
 
 export const metadata: Metadata = {
   title: `${company.nameKo} — ${company.headline}`,
@@ -77,7 +81,7 @@ export default function V2() {
         </section>
 
         {/* ── 반전 ① 다크 → 라이트 : 읽는 구간으로 넘어간다 ── */}
-        <section className="v2-sec" data-tone="light" id="solution">
+        <section className="v2-sec" data-tone="light" id="platform">
           <div className="v2-shell">
             <div className="v2-intro__grid">
               <p className="v2-eyebrow">{nav[0].labelEn}</p>
@@ -138,7 +142,7 @@ export default function V2() {
               </div>
 
               <div style={{ position: 'relative' }}>
-                <Plate kind={p.id as 'solution' | 'education' | 'platform'} seed={7 + i * 13} />
+                <Plate kind={p.id as 'public' | 'education' | 'platform'} seed={7 + i * 13} />
                 {/* 대표 수치를 도면 위에 크게 겹친다 — 카드 안에 갇히지 않게 */}
                 <BigNumber
                   value={p.project.metrics[0].value}
@@ -160,6 +164,20 @@ export default function V2() {
               </ul>
             </div>
           ))}
+
+          {/* 대표 실적 아래에 계속 쌓이는 실적 로그 */}
+          <div className="v2-shell" style={{ paddingBottom: 'clamp(56px, 9vh, 120px)' }}>
+            <div className="v2-evi__head">
+              <div>
+                <p className="v2-code">{workLog.labelEn.toUpperCase()}</p>
+                <h2 className="v2-evi__name">
+                  <Wipe>{'진행 상황'}</Wipe>
+                </h2>
+              </div>
+            </div>
+            <Signal />
+            <Dashboard />
+          </div>
         </section>
 
         {/* ── 운영 역량 · 데이터 테이블 ─────────────────────── */}

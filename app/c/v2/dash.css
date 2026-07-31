@@ -1,0 +1,412 @@
+/* ─────────────────────────────────────────────────────────────
+   실적 대시보드 + 스스로 도는 모션
+   · 카드 갤러리를 쓰지 않는다 → 계측기 로그 형태
+   · 모션을 스크롤에 묶지 않는다 → 항상 도는 값만 움직인다
+   ───────────────────────────────────────────────────────────── */
+
+.v2-dash {
+  margin-top: clamp(24px, 4vh, 48px);
+}
+
+/* ── 계기판 헤더 ─────────────────────────────────── */
+.v2-dash__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: clamp(20px, 4vw, 56px);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding-block: 18px;
+}
+.v2-dash__stat b {
+  font-family: var(--font-mono);
+  font-size: clamp(1.6rem, 3.4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.v2-dash__stat span {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.v2-dash__clock {
+  margin-left: auto;
+}
+
+/* 실시간 시계 */
+.v2-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  letter-spacing: 0.04em;
+  color: var(--fg);
+}
+.v2-clock i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #46ba67;
+  color: rgba(70, 186, 103, 0.55);
+  animation: v2-beat 2s ease-out infinite;
+}
+.v2-clock em {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--fg-faint);
+}
+
+/* 맥박 */
+.v2-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: rgba(255, 77, 23, 0.5);
+  animation: v2-beat 1.6s ease-out infinite;
+}
+@keyframes v2-beat {
+  0% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 1;
+  }
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+    opacity: 0.62;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    opacity: 1;
+  }
+}
+
+/* 신호 파형 */
+.v2-signal {
+  display: block;
+  width: 100%;
+  height: 34px;
+  opacity: 0.7;
+}
+
+/* ── 필터 칩 + 추가 버튼 ─────────────────────────── */
+.v2-dash__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 16px;
+}
+.v2-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.v2-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 7px 11px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--fg-dim);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: color 0.22s, border-color 0.22s, background 0.22s;
+}
+.v2-chip:hover {
+  color: var(--fg);
+  border-color: var(--fg-faint);
+}
+.v2-chip[aria-pressed="true"] {
+  background: var(--fg);
+  color: var(--ink);
+  border-color: var(--fg);
+}
+.v2-chip__n {
+  opacity: 0.55;
+  font-size: 10px;
+}
+.v2-dash__add {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 9px 15px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: filter 0.22s;
+}
+.v2-dash__add:hover {
+  filter: brightness(1.12);
+}
+
+/* ── 로그 표 (카드 아님) ─────────────────────────── */
+.v2-log {
+  border-top: 1px solid var(--rule);
+}
+.v2-log__head,
+.v2-log__row {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 3fr) 1.2fr 0.7fr 1.2fr 1fr 46px;
+  gap: 16px;
+  align-items: center;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.v2-log__head {
+  padding-block: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.v2-log__row {
+  transition: background 0.25s;
+}
+.v2-log__row:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+@media (max-width: 1000px) {
+  .v2-log__head {
+    display: none;
+  }
+  .v2-log__row {
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: start;
+    padding-block: 20px;
+  }
+  .v2-log__title {
+    grid-column: 1 / -1;
+  }
+  .v2-log__client::before {
+    content: "고객 ";
+    color: var(--fg-faint);
+  }
+  .v2-log__period::before {
+    content: "기간 ";
+    color: var(--fg-faint);
+  }
+}
+
+.v2-log__code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+.v2-log__title b {
+  display: block;
+  font-size: clamp(1rem, 1.7vw, 1.3rem);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+.v2-log__title em {
+  display: block;
+  font-style: normal;
+  font-size: 0.86rem;
+  color: var(--fg-dim);
+  margin-top: 3px;
+}
+.v2-log__stack {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--fg-faint);
+}
+.v2-log__client,
+.v2-log__period {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  letter-spacing: 0.03em;
+}
+.v2-log__metric b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.v2-log__metric em {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--fg-faint);
+  margin-top: 3px;
+}
+
+/* 상태 LED — 행마다 위상을 어긋나게 해서 기계적 동기화를 피한다 */
+.v2-log__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-dim);
+}
+.v2-log__status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.v2-log__status[data-s="live"] i {
+  background: #46ba67;
+  color: rgba(70, 186, 103, 0.5);
+  animation: v2-beat 2.4s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 260ms);
+}
+.v2-log__status[data-s="wip"] i {
+  background: var(--accent);
+  color: rgba(255, 77, 23, 0.5);
+  animation: v2-beat 1.8s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 260ms);
+}
+.v2-log__status[data-s="done"] i {
+  background: var(--fg-faint);
+}
+
+/* 삭제 */
+.v2-log__act {
+  text-align: right;
+}
+.v2-log__del,
+.v2-log__confirm button {
+  font-family: var(--font-mono);
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--fg-faint);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.v2-log__del:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.v2-log__confirm {
+  display: inline-flex;
+  gap: 4px;
+}
+.v2-log__confirm button {
+  font-size: 10px;
+  padding: 6px;
+}
+.v2-log__confirm .v2-log__yes {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.v2-log__lock {
+  color: var(--fg-faint);
+  font-size: 10px;
+}
+.v2-log__empty {
+  padding-block: 32px;
+  color: var(--fg-faint);
+  font-size: 0.9rem;
+}
+
+/* ── 추가 폼 ─────────────────────────────────────── */
+.v2-form {
+  display: grid;
+  gap: 14px 18px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  border: 1px solid var(--rule);
+  padding: clamp(16px, 2.4vw, 28px);
+  margin-bottom: 18px;
+  background: color-mix(in srgb, var(--fg) 3%, transparent);
+}
+.v2-form label {
+  display: grid;
+  gap: 6px;
+}
+.v2-form__wide {
+  grid-column: 1 / -1;
+}
+.v2-form span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.v2-form input,
+.v2-form select {
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--fg);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 2px;
+  border-radius: 0;
+}
+.v2-form input:focus,
+.v2-form select:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+.v2-form select option {
+  color: #111;
+}
+.v2-form__foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: center;
+  margin-top: 4px;
+}
+.v2-form__foot button {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 10px 20px;
+  border: none;
+  background: var(--fg);
+  color: var(--ink);
+  cursor: pointer;
+}
+.v2-form__foot button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.v2-form__foot p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--fg-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-clock i,
+  .v2-pulse,
+  .v2-log__status i {
+    animation: none !important;
+  }
+}
