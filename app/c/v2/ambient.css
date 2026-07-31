@@ -1,0 +1,175 @@
+/* ─────────────────────────────────────────────────────────────
+   상시 구동 계측 위젯 스타일
+   전부 얇고 저채도로 유지한다 — 본문과 경쟁하면 C 시안의 실패를 반복한다.
+   ───────────────────────────────────────────────────────────── */
+
+.v2-wave,
+.v2-bars,
+.v2-spark {
+  display: block;
+  width: 100%;
+}
+.v2-wave {
+  opacity: 0.7;
+}
+.v2-bars {
+  opacity: 0.55;
+}
+.v2-spark {
+  opacity: 0.75;
+  max-width: 88px;
+}
+
+/* 히어로 하단 계측 스트립 */
+.v2-strip {
+  display: grid;
+  gap: 8px;
+  padding-block: 10px 0;
+  border-top: 1px solid var(--rule);
+  margin-top: 14px;
+}
+@media (min-width: 720px) {
+  .v2-strip {
+    grid-template-columns: 1fr 150px;
+    align-items: center;
+    gap: 22px;
+  }
+}
+
+/* 사업축 행에 붙는 미니 바 */
+.v2-pillar__meter {
+  max-width: 160px;
+  margin-top: 14px;
+  opacity: 0.7;
+}
+
+/* 섹션 여백에 세우는 세로 레일 */
+.v2-rail2 {
+  display: block;
+  width: 10px;
+  height: 100%;
+  opacity: 0.7;
+}
+.v2-railslot {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 2px;
+  width: 10px;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 1280px) {
+  .v2-railslot {
+    display: block;
+  }
+}
+
+/* 얇은 상태 티커 — 대형 마퀴가 아니다 */
+.v2-tick {
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding-block: 7px;
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+.v2-tick__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.v2-tick__track span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  white-space: nowrap;
+  padding-right: 1.4em;
+}
+.v2-tick__track span::after {
+  content: '·';
+  color: var(--accent);
+  margin-left: 1.4em;
+  opacity: 0.6;
+}
+
+/* 판독값 */
+.v2-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.v2-readout em {
+  font-style: normal;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.v2-readout b {
+  font-weight: 700;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 깜빡이는 커서 */
+.v2-caret {
+  display: inline-block;
+  width: 0.44em;
+  height: 0.86em;
+  margin-left: 0.16em;
+  background: var(--accent);
+  vertical-align: baseline;
+  animation: v2-blink 1.05s steps(1) infinite;
+}
+@keyframes v2-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 수치 행에 스파크라인을 끼운다 */
+.v2-metrics li {
+  position: relative;
+}
+.v2-metric__spark {
+  margin-top: 10px;
+}
+
+/* 역량 행 판독 */
+.v2-cap__live {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* 푸터 계측 */
+.v2-foot__live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-caret {
+    animation: none !important;
+    opacity: 1;
+  }
+  .v2-tick__track {
+    transform: none !important;
+  }
+}
+
+/* 레일 슬롯의 기준이 되도록 증거 블록에 위치 컨텍스트를 준다 */
+.v2-evidence {
+  position: relative;
+}

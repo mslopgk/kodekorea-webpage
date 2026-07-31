@@ -15,10 +15,12 @@ import { HeroField } from './HeroField';
 import { Plate } from './Plate';
 import { Choreo } from './Choreo';
 import { Dashboard } from './Dashboard';
+import { Bars, Caret, Rail, Readout, Spark, Ticker, Wave } from './ambient';
 import { Signal } from './live';
 import { BigNumber, Rev, Wipe } from './parts';
 import './v2.css';
 import './dash.css';
+import './ambient.css';
 
 export const metadata: Metadata = {
   title: `${company.nameKo} — ${company.headline}`,
@@ -70,6 +72,10 @@ export default function V2() {
           </div>
           <div className="v2-shell v2-hero__foot">
             <p className="v2-code">{company.domain}</p>
+            <div className="v2-strip">
+              <Ticker items={domains} />
+              <Wave variant="signal" height={26} />
+            </div>
             <a className="v2-cta" href="#contact">
               <span className="v2-cta__box" aria-hidden="true">
                 →
@@ -119,6 +125,9 @@ export default function V2() {
                         ))}
                       </ul>
                     </Rev>
+                    <div className="v2-pillar__meter">
+                      <Bars count={18} height={26} seed={i + 1} />
+                    </div>
                   </div>
                 </article>
               ))}
@@ -141,6 +150,14 @@ export default function V2() {
                   </Rev>
                 </div>
                 <p className="v2-evi__client">{p.project.client}</p>
+              </div>
+              <Wave
+                variant={i === 0 ? 'sine' : i === 1 ? 'pulse' : 'noise'}
+                height={30}
+                accent={i === 0}
+              />
+              <div className="v2-railslot">
+                <Rail seed={i + 3} />
               </div>
 
               <div style={{ position: 'relative' }}>
@@ -178,6 +195,9 @@ export default function V2() {
                       {m.unit}
                     </b>
                     <span>{m.label}</span>
+                    <div className="v2-metric__spark">
+                      <Spark seed={mi + i * 5 + 1} />
+                    </div>
                   </Rev>
                 ))}
               </ul>
@@ -215,13 +235,20 @@ export default function V2() {
                 <Rev key={it.title} className="v2-cap__row" delay={i * 70}>
                   <span className="v2-cap__metric">{it.metric}</span>
                   <span className="v2-cap__title">{it.title}</span>
-                  <p className="v2-cap__detail">{it.detail}</p>
+                  <div>
+                    <p className="v2-cap__detail">{it.detail}</p>
+                    <div className="v2-cap__live">
+                      <Spark seed={i * 3 + 2} height={14} />
+                      <Readout label="LOAD" base={40 + i * 17} unit="%" />
+                    </div>
+                  </div>
                 </Rev>
               ))}
             </div>
 
             <div style={{ marginTop: 'clamp(56px, 9vh, 120px)' }}>
               <p className="v2-eyebrow">Clients</p>
+              <Wave variant="noise" height={24} accent={false} />
               <ul className="v2-clients">
                 {clients.map((c, i) => (
                   <Rev as="li" key={c.name + c.scope} delay={i * 60}>
@@ -234,6 +261,7 @@ export default function V2() {
 
             <div style={{ marginTop: 'clamp(56px, 9vh, 120px)' }}>
               <p className="v2-eyebrow">Domains</p>
+              <Ticker items={domains} speed={0.02} />
               <ul className="v2-domains">
                 {domains.map((d, i) => (
                   <Rev as="li" key={d} delay={Math.min(i * 26, 420)}>
@@ -251,7 +279,9 @@ export default function V2() {
             <p className="v2-eyebrow">{nav[3].labelEn}</p>
             <h2>
               <Wipe>{cta.contactHeadline}</Wipe>
+              <Caret />
             </h2>
+            <Wave variant="pulse" height={28} />
             <Rev as="p" className="v2-contact__body" delay={100}>
               {cta.contactBody}
             </Rev>
@@ -263,7 +293,12 @@ export default function V2() {
       </main>
 
       <footer className="v2-shell v2-foot">
-        <p>{footer.copyright}</p>
+        <div className="v2-foot__live">
+          <p>{footer.copyright}</p>
+          <Readout label="UPTIME" base={9982} unit="h" />
+          <Readout label="NODES" base={12} />
+          <Readout label="RTT" base={38} unit="ms" />
+        </div>
         <div className="v2-foot__links">
           {footer.links.map((l) => (
             <a key={l.label} href={l.href}>
