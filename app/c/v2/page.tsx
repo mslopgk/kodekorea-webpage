@@ -12,7 +12,6 @@ import {
 } from '@/content/site';
 import { HeroField } from './HeroField';
 import { Plate } from './Plate';
-import { Marquee, Rail } from './Marquee';
 import { BigNumber, Rev, Wipe } from './parts';
 import './v2.css';
 
@@ -25,7 +24,6 @@ export const metadata: Metadata = {
 export default function V2() {
   return (
     <div className="v2">
-      <Rail sections={nav} />
       <header className="v2-top">
         <a className="v2-mark" href="#top">
           {company.nameKo}
@@ -92,8 +90,7 @@ export default function V2() {
 
             <div style={{ marginTop: 'clamp(48px, 8vh, 104px)' }}>
               {pillars.map((p, i) => (
-                <Rev as="article" className="v2-pillar" key={p.id} delay={i * 90}>
-                  <span id={p.id} style={{ position: 'absolute', top: -96 }} aria-hidden="true" />
+                <article className="v2-pillar" key={p.id} id={p.id}>
                   <div>
                     <p className="v2-code">{p.code}</p>
                     <h2 className="v2-pillar__title">
@@ -117,7 +114,7 @@ export default function V2() {
                       </ul>
                     </Rev>
                   </div>
-                </Rev>
+                </article>
               ))}
             </div>
           </div>
@@ -140,7 +137,7 @@ export default function V2() {
                 <p className="v2-evi__client">{p.project.client}</p>
               </div>
 
-              <div className="v2-evi__stick" style={{ position: 'relative' }}>
+              <div style={{ position: 'relative' }}>
                 <Plate kind={p.id as 'solution' | 'education' | 'platform'} seed={7 + i * 13} />
                 {/* 대표 수치를 도면 위에 크게 겹친다 — 카드 안에 갇히지 않게 */}
                 <BigNumber
@@ -200,7 +197,13 @@ export default function V2() {
 
             <div style={{ marginTop: 'clamp(56px, 9vh, 120px)' }}>
               <p className="v2-eyebrow">Domains</p>
-              <Marquee items={domains} />
+              <ul className="v2-domains">
+                {domains.map((d, i) => (
+                  <Rev as="li" key={d} delay={Math.min(i * 26, 420)}>
+                    {d}
+                  </Rev>
+                ))}
+              </ul>
             </div>
           </div>
         </section>

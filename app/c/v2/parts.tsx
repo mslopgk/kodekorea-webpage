@@ -66,74 +66,6 @@ export function useSeen<T extends HTMLElement>() {
   return { ref, seen };
 }
 
-/**
- * 요소가 뷰포트를 통과하는 동안의 0→1 진행률.
- * 스크롤 "양"만 쓰고 속도에는 의존하지 않는다.
- */
-export function useViewProgress<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
-  const [p, setP] = useState(0);
-  const reduced = useReducedMotion();
-
-  useEffect(() => {
-    if (reduced) {
-      setP(1);
-      return;
-    }
-    const el = ref.current;
-    if (!el) return;
-
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // 요소 상단이 화면 하단에 닿을 때 0, 요소 하단이 화면 상단 60%에 닿을 때 1
-      const span = r.height + vh * 0.6;
-      const travelled = vh - r.top;
-      setP(Math.min(1, Math.max(0, travelled / span)));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [reduced]);
-
-  return { ref, p };
-}
-
-/** 전체 문서 스크롤 진행률 — 우측 레일 표시용 */
-export function useDocProgress() {
-  const [p, setP] = useState(0);
-  useEffect(() => {
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setP(max <= 0 ? 0 : Math.min(1, Math.max(0, window.scrollY / max)));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-  return p;
-}
-
 /** 위로 올라오며 페이드 */
 export function Rev({
   children,
@@ -143,7 +75,7 @@ export function Rev({
 }: {
   children: React.ReactNode;
   delay?: number;
-  as?: 'div' | 'p' | 'h2' | 'h3' | 'li' | 'span' | 'article';
+  as?: 'div' | 'p' | 'h2' | 'h3' | 'li' | 'span';
   className?: string;
 }) {
   const { ref, seen } = useSeen<HTMLDivElement>();
@@ -195,7 +127,7 @@ export function BigNumber({ value, unit, caption }: { value: string; unit: strin
   const shown = countable ? Math.round(n).toLocaleString('ko-KR') : value;
 
   return (
-    <div className="v2-bignum" ref={ref} data-in={seen}>
+    <div className="v2-bignum" ref={ref}>
       <span className="v2-bignum__v">{shown}</span>
       {unit ? <span className="v2-bignum__u">{unit}</span> : null}
       <span className="v2-bignum__cap">{caption}</span>

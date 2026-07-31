@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/lib/motion';
-import { useViewProgress } from './parts';
+import { useSeen } from './parts';
 
 /**
  * 증거 전시 — 카드 갤러리를 대신하는 Work 표현.
@@ -27,17 +27,9 @@ function rng(seed: number) {
 const ACCENT = '#ff4d17';
 
 export function Plate({ kind, seed = 7 }: { kind: Kind; seed?: number }) {
-  /**
-   * 스크롤 진행률로 그림을 구동한다.
-   * 1차 V2에서는 화면에 들어올 때 한 번 재생하고 멈춰서 "본문이 심심하다"는
-   * 지적을 받았다. 이제 스크롤하는 동안 도면이 계속 반응한다 —
-   * 사용자의 스크롤이 곧 "파이프라인이 도면을 읽는 진행률"이 된다.
-   */
-  const { ref: wrapRef, p } = useViewProgress<HTMLDivElement>();
+  const { ref: wrapRef, seen } = useSeen<HTMLDivElement>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const reduced = useReducedMotion();
-  /** 마우스 위치에 따른 미세 기울기 — 도면이 판처럼 느껴지게 */
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const cv = canvasRef.current;
@@ -46,6 +38,7 @@ export function Plate({ kind, seed = 7 }: { kind: Kind; seed?: number }) {
     if (!ctx) return;
 
     let raf = 0;
+    let start: number | null = null;
     let ro: ResizeObserver | null = null;
 
     const draw = (progress: number) => {
@@ -86,43 +79,31 @@ export function Plate({ kind, seed = 7 }: { kind: Kind; seed?: number }) {
       return () => ro?.disconnect();
     }
 
-    // 진행률이 바뀔 때마다 다시 그린다 (rAF 1프레임으로 합침)
-    raf = requestAnimationFrame(() => draw(p));
-    ro = new ResizeObserver(() => draw(p));
+    if (!seen) {
+      draw(0);
+      return;
+    }
+
+    const DUR = 2600;
+    const tick = (t: number) => {
+      if (start === null) start = t;
+      const p = Math.min(1, (t - start) / DUR);
+      draw(p);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    ro = new ResizeObserver(() => draw(1));
     ro.observe(cv);
 
     return () => {
       cancelAnimationFrame(raf);
       ro?.disconnect();
     };
-  }, [kind, seed, p, reduced]);
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (reduced) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    setTilt({
-      x: ((e.clientX - r.left) / r.width - 0.5) * 2,
-      y: ((e.clientY - r.top) / r.height - 0.5) * 2,
-    });
-  };
+  }, [kind, seed, seen, reduced]);
 
   return (
-    <div
-      className="v2-plate"
-      ref={wrapRef}
-      onMouseMove={onMove}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{
-        transform: reduced
-          ? undefined
-          : `perspective(1400px) rotateY(${tilt.x * 1.6}deg) rotateX(${-tilt.y * 1.1}deg)`,
-      }}
-    >
+    <div className="v2-plate" ref={wrapRef}>
       <canvas ref={canvasRef} aria-hidden="true" />
-      {/* 읽는 중임을 보여주는 진행 게이지 */}
-      <div className="v2-plate__gauge" aria-hidden="true">
-        <span style={{ transform: `scaleX(${p})` }} />
-      </div>
     </div>
   );
 }
