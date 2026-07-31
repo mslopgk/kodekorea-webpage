@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# 아직 확정 전 디자인 시안이므로 검색엔진 색인을 막는다.
+# 실물 사이트로 확정되면 이 블록을 삭제한다.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

@@ -7,3 +7,5 @@ next-env.d.ts
 .env*
 .DS_Store
 .claude/worktrees/
+out/
+.netlify/

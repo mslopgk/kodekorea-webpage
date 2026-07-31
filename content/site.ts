@@ -20,14 +20,29 @@ export const company = {
   /** 한 줄 정의 — 히어로 하단 보조 카피로 사용 */
   tagline: 'AI를 만들고, 가르치고, 운영합니다',
   taglineEn: 'We build, teach, and operate AI',
-  /** 히어로 헤드라인. 컨셉별로 줄바꿈 위치만 다르게 처리할 수 있다. */
-  headline: '연구로 끝나지 않는 AI',
-  headlineSub: '현장에서 돌아가는 것까지가 우리 일입니다',
+  /**
+   * 히어로 헤드라인.
+   * 1차 디자이너 평가에서 기존 문구가 "너무 길다"는 지적을 받아 3동사로 압축했다.
+   * `heroVerbs`가 사업축 3개와 1:1로 대응하므로 첫 화면이 곧 정보 구조가 된다.
+   */
+  headline: '만들고, 가르치고, 운영합니다',
+  /** 헤드라인 아래 한 줄. 기존 긴 문장을 대체한 압축 버전. */
+  headlineSub: '연구실 밖에서 돌아가는 AI',
   headlineEn: 'AI that ships',
-  /** 회사 소개 본문 */
+  /** 회사 소개 본문 — 랜딩 전달력을 위해 두 문장으로 줄였다 */
   intro:
-    '코드코리아는 제조 현장의 AI 솔루션, 학교와 기업의 AI 교육, 그리고 그것을 담는 플랫폼을 직접 만듭니다. 기획부터 모델 학습, 웹·앱 구현, 서버 운영까지 한 팀에서 처리합니다.',
+    '기획부터 모델 학습, 구현, 서버 운영까지 한 팀에서 합니다. 만든 다음 넘기고 끝내지 않습니다.',
 } as const;
+
+/**
+ * 히어로의 3동사 ↔ 사업축 매핑.
+ * 각 동사를 누르면 해당 사업축으로 이동한다.
+ */
+export const heroVerbs = [
+  { verb: '만들고', pillar: 'solution', en: 'Build' },
+  { verb: '가르치고', pillar: 'education', en: 'Teach' },
+  { verb: '운영합니다', pillar: 'platform', en: 'Operate' },
+] as const;
 
 /** 3개 사업축 */
 export const pillars = [
@@ -37,9 +52,9 @@ export const pillars = [
     code: 'S/01',
     labelKo: 'AI 솔루션',
     labelEn: 'AI Solutions',
-    summary: '현장 데이터를 읽는 비전 AI를 만듭니다',
+    summary: '사람이 읽던 값을 자동으로 뽑아냅니다',
     body:
-      '제조 도면, 설비 영상, 검사 이미지처럼 정형화되지 않은 현장 데이터를 다룹니다. 탐지 모델과 OCR, 비전 언어 모델을 교차 검증하는 파이프라인으로 사람이 읽던 값을 자동으로 뽑아냅니다.',
+      '도면과 검사 이미지처럼 정형화되지 않은 현장 데이터를 다룹니다. 탐지 모델과 OCR, 비전 언어 모델을 교차 검증해 오탐을 걸러냅니다.',
     project: {
       name: 'BubbleMap',
       subtitle: '제조 도면 AI 버블맵',
@@ -63,7 +78,7 @@ export const pillars = [
     labelEn: 'AI Education',
     summary: '가르칠 도구까지 직접 만듭니다',
     body:
-      '커리큘럼과 교재만 쓰지 않습니다. 학생이 실제로 손을 대는 개발 환경을 직접 만들어 함께 제공합니다. 블록 코딩에서 파이썬으로 넘어가는 구간의 단절을 도구로 해결했습니다.',
+      '커리큘럼만 쓰지 않습니다. 학생이 손대는 개발 환경을 직접 만들어 함께 제공합니다. 블록에서 파이썬으로 넘어가는 단절을 도구로 해결했습니다.',
     project: {
       name: '두봇 · BlockPy',
       subtitle: '블록 ↔ 파이썬 무손실 양방향 IDE',
@@ -87,7 +102,7 @@ export const pillars = [
     labelEn: 'Platform',
     summary: '만든 다음 운영까지 책임집니다',
     body:
-      '협업 도구, 학습 관리 시스템, 기관 웹사이트를 만들고 우리 인프라에서 직접 운영합니다. 납품 후 손 떼는 방식이 아니라, 서버와 도메인과 메일까지 이어서 관리합니다.',
+      '협업 도구와 기관 웹사이트를 만들고 우리 인프라에서 직접 운영합니다. 납품 후 손 떼지 않고 서버와 도메인, 메일까지 관리합니다.',
     project: {
       name: 'TeamHub',
       subtitle: '팀 협업 플랫폼 + MCP 서버',
@@ -110,7 +125,7 @@ export const capability = {
   labelKo: '만드는 데서 끝내지 않습니다',
   labelEn: 'Build, then run it',
   body:
-    '외부 클라우드에 의존하지 않고 자체 서버에서 서비스를 운영합니다. 인프라를 직접 다루기 때문에 비용과 성능을 우리가 통제하고, 그 결과를 고객 프로젝트에도 그대로 적용합니다.',
+    '외부 클라우드에 의존하지 않고 자체 서버에서 운영합니다. 비용과 성능을 우리가 통제하고, 그 방식을 고객 프로젝트에도 그대로 씁니다.',
   items: [
     {
       title: '호스팅 비용 구조 개선',
@@ -177,7 +192,7 @@ export const cta = {
   secondaryEn: 'Get Deck',
   contactHeadline: '해결할 문제가 있으신가요',
   contactBody:
-    '데이터는 있는데 어디서 시작해야 할지 모르겠다면, 그 상태로 문의해 주셔도 됩니다. 무엇이 가능한지부터 함께 정리합니다.',
+    '데이터는 있는데 어디서 시작할지 모르겠다면, 그 상태로 주셔도 됩니다.',
 } as const;
 
 export const footer = {
@@ -191,6 +206,15 @@ export const footer = {
 
 /** 시안 인덱스에서 사용 */
 export const concepts = [
+  {
+    slug: 'v2',
+    letter: 'V2',
+    titleKo: 'B 베이스 + A 구조',
+    titleEn: 'Merged',
+    desc: '1차 평가 반영. 히어로를 3동사로 압축해 첫 화면이 곧 정보 구조가 되게 하고, Work를 카드 갤러리에서 증거 전시로 바꿨습니다. 명암 반전은 6회 → 2회.',
+    ref: '디자이너 1차 평가',
+    tone: '현재 유력안 — 정보 뼈대 + 지점 집중 경험',
+  },
   {
     slug: 'hut8',
     letter: 'A',
