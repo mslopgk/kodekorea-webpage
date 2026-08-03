@@ -13,6 +13,8 @@ import {
   hubSites,
   pilotDistrict,
   verifiedWork,
+  legal,
+  legalLabels,
   workLog,
 } from '@/content/site';
 import { HeroField } from './HeroField';
@@ -299,6 +301,43 @@ export function V2Page() {
           </div>
         </section>
       </main>
+
+      {/* 사업자정보 — 국내 상업 웹사이트의 법정 표기 의무 항목 */}
+      <div className="v2-shell v2-legal">
+        <p className="v2-eyebrow">{legalLabels.heading}</p>
+        <dl className="v2-legal__list">
+          <div>
+            <dt>{legalLabels.bizName}</dt>
+            <dd>
+              {legal.bizNameKo} <span>({legal.bizType})</span>
+            </dd>
+          </div>
+          <div>
+            <dt>{legalLabels.ceo}</dt>
+            <dd>{legal.ceo}</dd>
+          </div>
+          <div>
+            <dt>{legalLabels.bizNumber}</dt>
+            <dd>{legal.bizNumber}</dd>
+          </div>
+          <div>
+            <dt>{legalLabels.address}</dt>
+            <dd>{legal.address}</dd>
+          </div>
+          <div>
+            <dt>{legalLabels.phone}</dt>
+            <dd>
+              <a href={`tel:${legal.phone.replace(/-/g, '')}`}>{legal.phone}</a>
+            </dd>
+          </div>
+          <div>
+            <dt>{legalLabels.email}</dt>
+            <dd>
+              <a href={`mailto:${legal.email}`}>{legal.email}</a>
+            </dd>
+          </div>
+        </dl>
+      </div>
 
       <footer className="v2-shell v2-foot">
         <p>{footer.copyright}</p>

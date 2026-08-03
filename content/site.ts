@@ -390,9 +390,23 @@ export const legal = {
   fax: '050-4288-7966',
   email: 'seongho.cho@kodekorea.kr',
   github: 'https://github.com/shain1912',
-  /** 배포 전 필수. 값이 비어 있으면 푸터에 표기하지 않는다. */
-  bizNumber: '',
+  /**
+   * 사업자등록번호. 2026-08-03 수령, 체크섬 검증 통과.
+   * 국내 상업 웹사이트의 법정 표기 의무 항목이다.
+   */
+  bizNumber: '679-09-00696',
   founded: '2017',
+} as const;
+
+/** 사업자정보 표기 라벨 — 법정 표기 항목 */
+export const legalLabels = {
+  heading: '사업자정보',
+  bizName: '상호',
+  ceo: '대표자',
+  bizNumber: '사업자등록번호',
+  address: '주소',
+  phone: '전화',
+  email: '이메일',
 } as const;
 
 export const footer = {

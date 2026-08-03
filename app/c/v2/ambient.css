@@ -293,3 +293,50 @@
     transition: none !important;
   }
 }
+
+
+/* ── 사업자정보 (법정 표기) ─────────────────────────
+   눈에 띄게 크게 둘 필요는 없지만, 찾으려는 사람은 반드시 찾을 수 있어야 한다. */
+.v2-legal {
+  padding-top: clamp(40px, 6vh, 72px);
+  padding-bottom: 8px;
+  border-top: 1px solid var(--rule);
+}
+.v2-legal__list {
+  display: grid;
+  gap: 10px clamp(20px, 3vw, 44px);
+  margin: 16px 0 0;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.v2-legal__list > div {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.v2-legal__list dt {
+  flex: none;
+  min-width: 6.5em;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--fg-faint);
+}
+.v2-legal__list dd {
+  margin: 0;
+  color: var(--fg-dim);
+}
+.v2-legal__list dd span {
+  color: var(--fg-faint);
+  font-size: 11px;
+}
+.v2-legal__list a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+.v2-legal__list a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
