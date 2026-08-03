@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "npm run build && tar -czf - -C out . | ssh -i ~/.ssh/id_ed25519_new ubuntu@156.228.4.156 \"sudo /var/www/kodekorea/deploy.sh\"",
+    "deploy:list": "ssh -i ~/.ssh/id_ed25519_new ubuntu@156.228.4.156 \"sudo /var/www/kodekorea/deploy.sh --list\"",
+    "deploy:rollback": "ssh -i ~/.ssh/id_ed25519_new ubuntu@156.228.4.156 \"sudo /var/www/kodekorea/deploy.sh --rollback\""
   },
   "dependencies": {
     "gsap": "^3.15.0",
