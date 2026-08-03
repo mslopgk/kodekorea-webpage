@@ -9,13 +9,19 @@ import {
   heroVerbs,
   nav,
   pillars,
+  diagnosisAreas,
+  districts,
+  hubSites,
+  pilotDistrict,
+  verifiedWork,
   workLog,
 } from '@/content/site';
 import { HeroField } from './HeroField';
 import { Plate } from './Plate';
 import { Choreo } from './Choreo';
 import { Dashboard } from './Dashboard';
-import { Bars, Caret, Rail, Readout, Spark, Ticker, Wave } from './ambient';
+import { Caret, Ticker, Wave } from './ambient';
+import { Rotate, SiteCycle, Sweep, WorkCycle } from './cycle';
 import { Signal } from './live';
 import { BigNumber, Rev, Wipe } from './parts';
 import './v2.css';
@@ -25,6 +31,13 @@ import './ambient.css';
 export const metadata: Metadata = {
   title: `${company.nameKo} — ${company.headline}`,
   description: company.intro,
+};
+
+/** 거점 사이트 상태 라벨 — workLog의 상태 문구를 재사용한다 */
+const STATUS_TEXT: Record<string, string> = {
+  live: workLog.stats.live,
+  wip: workLog.stats.wip,
+  hold: workLog.holdKo,
 };
 
 /** 명암 반전은 딱 두 번. 각 반전에 이유가 있다. */
@@ -125,8 +138,15 @@ export default function V2() {
                         ))}
                       </ul>
                     </Rev>
-                    <div className="v2-pillar__meter">
-                      <Bars count={18} height={26} seed={i + 1} />
+                    {/* 축마다 실제 범위가 계속 돈다 — 움직임 자체가 정보다 */}
+                    <div className="v2-pillar__live">
+                      {p.id === 'public' ? (
+                        <Rotate label="진단영역" items={diagnosisAreas} periodMs={1700} />
+                      ) : p.id === 'education' ? (
+                        <Rotate label="검증 실적" items={verifiedWork.map((v) => v.title)} periodMs={2400} />
+                      ) : (
+                        <Rotate label="구축 사이트" items={hubSites.map((h) => h.name)} periodMs={2400} />
+                      )}
                     </div>
                   </div>
                 </article>
@@ -151,14 +171,16 @@ export default function V2() {
                 </div>
                 <p className="v2-evi__client">{p.project.client}</p>
               </div>
-              <Wave
-                variant={i === 0 ? 'sine' : i === 1 ? 'pulse' : 'noise'}
-                height={30}
-                accent={i === 0}
-              />
-              <div className="v2-railslot">
-                <Rail seed={i + 3} />
-              </div>
+              {/* 축마다 실제 범위·목록이 계속 돈다.
+                  추상 파형이 아니라 검증된 내용이 움직인다. */}
+              {p.id === 'platform' ? (
+                <SiteCycle sites={hubSites} labels={STATUS_TEXT} />
+              ) : p.id === 'education' ? (
+                <WorkCycle items={verifiedWork} />
+              ) : (
+                <Sweep items={districts} mark={pilotDistrict} periodMs={780} />
+              )}
+
 
               <div style={{ position: 'relative' }}>
                 {/* 실제 캡처가 있으면 캡처를, 없으면 절차적 도면을 쓴다.
@@ -195,9 +217,6 @@ export default function V2() {
                       {m.unit}
                     </b>
                     <span>{m.label}</span>
-                    <div className="v2-metric__spark">
-                      <Spark seed={mi + i * 5 + 1} />
-                    </div>
                   </Rev>
                 ))}
               </ul>
@@ -235,13 +254,7 @@ export default function V2() {
                 <Rev key={it.title} className="v2-cap__row" delay={i * 70}>
                   <span className="v2-cap__metric">{it.metric}</span>
                   <span className="v2-cap__title">{it.title}</span>
-                  <div>
-                    <p className="v2-cap__detail">{it.detail}</p>
-                    <div className="v2-cap__live">
-                      <Spark seed={i * 3 + 2} height={14} />
-                      <Readout label="LOAD" base={40 + i * 17} unit="%" />
-                    </div>
-                  </div>
+                  <p className="v2-cap__detail">{it.detail}</p>
                 </Rev>
               ))}
             </div>
@@ -293,12 +306,7 @@ export default function V2() {
       </main>
 
       <footer className="v2-shell v2-foot">
-        <div className="v2-foot__live">
-          <p>{footer.copyright}</p>
-          <Readout label="UPTIME" base={9982} unit="h" />
-          <Readout label="NODES" base={12} />
-          <Readout label="RTT" base={38} unit="ms" />
-        </div>
+        <p>{footer.copyright}</p>
         <div className="v2-foot__links">
           {footer.links.map((l) => (
             <a key={l.label} href={l.href}>

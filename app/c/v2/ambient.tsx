@@ -2,9 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from '@/lib/motion';
+import { subscribe } from './ticker';
 
 /**
- * 상시 구동 계측 위젯 모음.
+ * 추상 텍스처 위젯.
+ *
+ * ⚠️ 여기에는 **데이터를 주장하는 그림을 두지 않는다.** 이전 버전의
+ *    스파크라인·이퀄라이저·판독값은 존재하지 않는 추이와 지어낸 수치를 그려
+ *    허위였다. 전부 제거했고, 실제 정보가 도는 것은 cycle.tsx가 담당한다.
+ *    남은 것은 구분선 대체용 파형과 커서뿐 — 둘 다 데이터를 사칭하지 않는다.
+ *
+ * 원래 목적 (유지):
  *
  * 스크롤과 무관하게 **스스로 계속 도는** 요소들이다. 사이트의 정체성이
  * "계측기 로그"이므로 살아 있는 판독값이 많을수록 주장과 형태가 맞는다.
@@ -17,36 +25,6 @@ import { useReducedMotion } from '@/lib/motion';
  *   · 탭이 백그라운드면 티커 자체가 멈춘다
  *   · prefers-reduced-motion이면 한 프레임만 그리고 정지
  */
-
-type Sub = (t: number) => void;
-
-const subs = new Set<Sub>();
-let raf = 0;
-let hidden = false;
-
-function loop(t: number) {
-  raf = 0;
-  if (!hidden) for (const fn of subs) fn(t);
-  if (subs.size) raf = requestAnimationFrame(loop);
-}
-
-function subscribe(fn: Sub) {
-  subs.add(fn);
-  if (!raf) raf = requestAnimationFrame(loop);
-  return () => {
-    subs.delete(fn);
-    if (!subs.size && raf) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    }
-  };
-}
-
-if (typeof document !== 'undefined') {
-  document.addEventListener('visibilitychange', () => {
-    hidden = document.hidden;
-  });
-}
 
 /** 캔버스 위젯 공통 배선 — 가시성 게이트 + DPR + 공유 티커 */
 function useCanvas(
@@ -109,8 +87,6 @@ function useCanvas(
   return ref;
 }
 
-const ACCENT = '#ff4d17';
-const FAINT = 'rgba(255,255,255,0.2)';
 
 /** 시드 고정 의사난수 — 서버·클라이언트 렌더가 갈리지 않는다 */
 const noise = (n: number) => {
@@ -118,11 +94,11 @@ const noise = (n: number) => {
   return x - Math.floor(x);
 };
 
-/* ── 신호 파형 ─────────────────────────────────────
-   variant로 성격을 바꾼다. 같은 그림이 여러 번 나오면 벽지가 된다. */
+
+/* ── 파형 ── 구분선을 대신하는 추상 텍스처. 어떤 수치도 주장하지 않는다. */
 export function Wave({
   variant = 'signal',
-  height = 34,
+  height = 30,
   accent = true,
   className = '',
 }: {
@@ -134,26 +110,23 @@ export function Wave({
   const ref = useCanvas(
     (ctx, w, h, time) => {
       const t = time * 0.00105;
-      ctx.strokeStyle = accent ? 'rgba(255,77,23,0.85)' : 'rgba(255,255,255,0.4)';
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = accent ? 'rgba(255,77,23,0.8)' : 'rgba(255,255,255,0.34)';
+      ctx.lineWidth = 1.1;
       ctx.beginPath();
       for (let x = 0; x <= w; x += 2) {
         const u = x / w;
         let y: number;
         if (variant === 'pulse') {
-          // 구형파 + 간헐 스파이크
-          const sq = Math.sign(Math.sin(u * 34 + t * 1.6)) * 0.26;
-          const sp = Math.max(0, Math.sin(u * 80 - t * 3) ** 16) * 0.5;
-          y = h / 2 - (sq + sp) * h * 0.42;
+          const sq = Math.sign(Math.sin(u * 34 + t * 1.6)) * 0.24;
+          y = h / 2 - sq * h * 0.42;
         } else if (variant === 'noise') {
-          const n = (noise(Math.floor(u * 90) + Math.floor(t * 5)) - 0.5) * 0.7;
+          const n = (noise(Math.floor(u * 90) + Math.floor(t * 5)) - 0.5) * 0.6;
           y = h / 2 - n * h * 0.5;
         } else if (variant === 'sine') {
-          y = h / 2 - Math.sin(u * 9 + t) * h * 0.32;
+          y = h / 2 - Math.sin(u * 9 + t) * h * 0.3;
         } else {
-          const base = Math.sin(u * 22 + t) * 0.28 + Math.sin(u * 7 - t * 0.6) * 0.16;
-          const spike = Math.max(0, Math.sin(u * 60 - t * 2.4) ** 12) * 0.55;
-          y = h / 2 - (base + spike) * h * 0.42;
+          const base = Math.sin(u * 22 + t) * 0.26 + Math.sin(u * 7 - t * 0.6) * 0.15;
+          y = h / 2 - base * h * 0.42;
         }
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
@@ -162,102 +135,11 @@ export function Wave({
     },
     [variant, accent]
   );
-
   return <canvas className={`v2-wave ${className}`} style={{ height }} ref={ref} aria-hidden="true" />;
 }
 
-/* ── 이퀄라이저 바 ─────────────────────────────── */
-export function Bars({ count = 22, height = 30, seed = 1 }: { count?: number; height?: number; seed?: number }) {
-  const ref = useCanvas(
-    (ctx, w, h, time) => {
-      const t = time * 0.0016;
-      const gap = 2;
-      const bw = Math.max(1.5, (w - gap * (count - 1)) / count);
-      for (let i = 0; i < count; i++) {
-        const p = 0.28 + 0.72 * Math.abs(Math.sin(t * (0.6 + noise(i + seed) * 1.5) + i * 0.7));
-        const bh = h * p;
-        ctx.fillStyle = i % 5 === 0 ? 'rgba(255,77,23,0.8)' : 'rgba(255,255,255,0.24)';
-        ctx.fillRect(i * (bw + gap), h - bh, bw, bh);
-      }
-    },
-    [count, seed]
-  );
-  return <canvas className="v2-bars" style={{ height }} ref={ref} aria-hidden="true" />;
-}
-
-/* ── 스파크라인 ─── 수치 옆에 붙는 아주 작은 추이선 ── */
-export function Spark({ seed = 1, height = 16 }: { seed?: number; height?: number }) {
-  const ref = useCanvas(
-    (ctx, w, h, time) => {
-      const t = time * 0.0009;
-      ctx.strokeStyle = 'rgba(255,255,255,0.34)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      const n = 26;
-      for (let i = 0; i <= n; i++) {
-        const u = i / n;
-        const v =
-          0.5 +
-          Math.sin(u * 6 + t + seed) * 0.24 +
-          (noise(i + seed * 7) - 0.5) * 0.22;
-        const x = u * w;
-        const y = h - v * h;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-      // 마지막 점만 액센트 — 지금 값이라는 표시
-      const lastV = 0.5 + Math.sin(6 + t + seed) * 0.24 + (noise(n + seed * 7) - 0.5) * 0.22;
-      ctx.fillStyle = ACCENT;
-      ctx.beginPath();
-      ctx.arc(w - 1, h - lastV * h, 1.7, 0, Math.PI * 2);
-      ctx.fill();
-    },
-    [seed]
-  );
-  return <canvas className="v2-spark" style={{ height }} ref={ref} aria-hidden="true" />;
-}
-
-/* ── 세로 스캔 레일 ─── 섹션 여백에 세우는 얇은 게이지 ── */
-export function Rail({ seed = 2 }: { seed?: number }) {
-  const ref = useCanvas(
-    (ctx, w, h, time) => {
-      const t = time * 0.0004;
-      ctx.strokeStyle = FAINT;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(w / 2, 0);
-      ctx.lineTo(w / 2, h);
-      ctx.stroke();
-      // 눈금
-      ctx.strokeStyle = 'rgba(255,255,255,0.14)';
-      for (let y = 0; y < h; y += 14) {
-        ctx.beginPath();
-        ctx.moveTo(w / 2 - 2, y);
-        ctx.lineTo(w / 2 + 2, y);
-        ctx.stroke();
-      }
-      // 훑고 내려가는 마커
-      const p = (t + noise(seed)) % 1;
-      const my = p * h;
-      const g = ctx.createLinearGradient(0, my - 26, 0, my + 26);
-      g.addColorStop(0, 'rgba(255,77,23,0)');
-      g.addColorStop(0.5, 'rgba(255,77,23,0.55)');
-      g.addColorStop(1, 'rgba(255,77,23,0)');
-      ctx.strokeStyle = g;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(w / 2, my - 26);
-      ctx.lineTo(w / 2, my + 26);
-      ctx.stroke();
-    },
-    [seed]
-  );
-  return <canvas className="v2-rail2" ref={ref} aria-hidden="true" />;
-}
-
-/* ── 흐르는 상태 티커 ─── 얇은 모노 한 줄. 대형 마퀴가 아니다 ── */
-export function Ticker({ items, speed = 0.028 }: { items: readonly string[]; speed?: number }) {
+/* ── 티커 ── 흐르는 것이 실제 기술 영역 목록이므로 내용이 정보다. */
+export function Ticker({ items, speed = 0.026 }: { items: readonly string[]; speed?: number }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -265,11 +147,9 @@ export function Ticker({ items, speed = 0.028 }: { items: readonly string[]; spe
     if (reduced) return;
     const el = ref.current;
     if (!el) return;
-    let x = 0;
     let off: (() => void) | null = null;
     const step = (t: number) => {
-      x = (t * speed) % 50;
-      el.style.transform = `translate3d(${-x}%, 0, 0)`;
+      el.style.transform = `translate3d(${-((t * speed) % 50)}%, 0, 0)`;
     };
     const io = new IntersectionObserver(
       ([e]) => {
@@ -297,33 +177,6 @@ export function Ticker({ items, speed = 0.028 }: { items: readonly string[]; spe
         ))}
       </div>
     </div>
-  );
-}
-
-/** 깜빡이는 판독값 — 마지막 두 자리만 흔들려서 "살아 있는 계측기"로 읽힌다 */
-export function Readout({ label, base, unit = '' }: { label: string; base: number; unit?: string }) {
-  const reduced = useReducedMotion();
-  const [v, setV] = useState(base);
-
-  useEffect(() => {
-    if (reduced) return;
-    let last = 0;
-    const off = subscribe((t) => {
-      if (t - last < 900) return;
-      last = t;
-      setV(base + Math.round((noise(t) - 0.5) * base * 0.04));
-    });
-    return off;
-  }, [reduced, base]);
-
-  return (
-    <span className="v2-readout">
-      <em>{label}</em>
-      <b suppressHydrationWarning>
-        {v.toLocaleString('ko-KR')}
-        {unit}
-      </b>
-    </span>
   );
 }
 

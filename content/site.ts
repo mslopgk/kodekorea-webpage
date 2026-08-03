@@ -239,6 +239,69 @@ export const domains = [
   '에이전트 오케스트레이션',
 ] as const;
 
+/**
+ * 공공디자인 진단시스템의 실제 과업 범위.
+ * 출처: 제안서협상안 (회신본 1-① `공개가능`)
+ * 8개 진단영역과 부산 16개 구·군은 계약상 과업 범위이며 공개 가능한 사실이다.
+ */
+export const diagnosisAreas = [
+  '주거',
+  '환경',
+  '교통',
+  '안전',
+  '교육',
+  '산업일자리',
+  '문화여가',
+  '보건복지',
+] as const;
+
+/** 진단 대상 16개 구·군. 1차년도 시범 대상지는 부산진구. */
+export const districts = [
+  '중구',
+  '서구',
+  '동구',
+  '영도구',
+  '부산진구',
+  '동래구',
+  '남구',
+  '북구',
+  '해운대구',
+  '사하구',
+  '금정구',
+  '강서구',
+  '연제구',
+  '수영구',
+  '사상구',
+  '기장군',
+] as const;
+export const pilotDistrict = '부산진구';
+
+/**
+ * 대학 AI 거점 사이트군의 실제 구성.
+ * 출처: 발주처 확인·회신 메일 (회신본 1-②)
+ * 도메인은 공개 운영 중인 것만 노출한다.
+ */
+export const hubSites = [
+  { name: 'ARISE-AI 거점 메인', domain: 'arise-ai.pusan.ac.kr', status: 'live' },
+  { name: '장영실 AI융합연구원', domain: '', status: 'wip' },
+  { name: 'AX-PBL Teaching Studio', domain: '', status: 'wip' },
+  { name: 'AI융합교육원 개편', domain: '', status: 'hold' },
+] as const;
+
+/**
+ * 직인 검증 교육 실적 6건.
+ * 출처: 발주기관 직인 사업실적증명원 (회신본 1-B)
+ * 금액은 회신본 권고에 따라 반올림 규모로만 표기한다.
+ */
+export const verifiedWork = [
+  { title: 'AI 캠프', year: '2022', scale: '3,750만 원 규모' },
+  { title: '동계방학 직업역량강화 캠프', year: '2023', scale: '3,640만 원 규모' },
+  { title: 'LINC 3.0 전공 살려 데이터 사이언스하기', year: '2022–23', scale: '1,960만 원 규모' },
+  { title: 'LINC 3.0 AI Art Crash Course', year: '2023', scale: '2,180만 원 규모' },
+  { title: '과학영재교육원 SW융합 해커톤', year: '2021', scale: '15개팀 운영' },
+  { title: '과학영재교육원 AI 특강', year: '2021', scale: '1,000만 원 규모' },
+] as const;
+
 /** 실적 로그 대시보드 문구 */
 export const workLog = {
   labelKo: '진행 상황',
@@ -250,6 +313,8 @@ export const workLog = {
   lockedTip: '대표 실적은 삭제할 수 없습니다',
   cols: { idx: 'IDX', project: '프로젝트', client: '고객', period: '기간', metric: '지표', status: '상태' },
   stats: { total: '등록 실적', live: '운영 중', wip: '진행 중' },
+  /** 계약 성립 전이라 실적으로 게재할 수 없는 상태 (회신본 1-② 참고) */
+  holdKo: '계약 전',
   form: {
     title: '프로젝트명',
     client: '고객',
