@@ -302,6 +302,223 @@ export const verifiedWork = [
   { title: '과학영재교육원 AI 특강', year: '2021', scale: '1,000만 원 규모' },
 ] as const;
 
+/**
+ * 메일 원장에서 확인한 실적.
+ *
+ * 출처: mail.kodekorea.kr 전 계정 6,305통 헤더 + 결정적 13건 원문.
+ *       추출 방법과 근거 등급은 `docs/portfolio-from-mail.md`에 있다.
+ *
+ * ⚠️ 지키는 규칙 세 가지:
+ *   ① **견적은 실적이 아니다.** 여기 있는 것은 계약서·발주서·보증보험·세금계산서·
+ *      완료보고 중 하나 이상이 확인된 건만이다. 견적만 오간 건(부산대 AI 거점대학
+ *      웹사이트 3,000/1,000만 원안, 헥사휴먼케어 재활 케어센터 등)은 제외했다.
+ *   ② **금액은 메일에서 확인된 것만** 쓴다. 확인 안 된 건은 `scale`을 비워 둔다.
+ *   ③ 기관명은 전부 `client()`를 통과한다 — 실명 노출 동의를 받은 곳이 아직 없다.
+ *
+ * `evidence`는 그 줄을 왜 실을 수 있는지다. 근거가 없으면 줄을 만들지 않는다.
+ */
+export type Evidence = '계약' | '청구' | '수행' | '강의';
+
+export const portfolio = [
+  {
+    title: 'AI 로보틱스 교육 플랫폼 구축 및 프로그램 개발',
+    org: client('국립부산과학관', '국립 과학관'),
+    period: '2026',
+    status: 'wip' as const,
+    kind: 'platform',
+    evidence: '계약' as Evidence,
+    note: '나라장터 계약 · 계약보증보험 발행',
+    scale: 'Dobot 기반 중등·고등 12개 과정',
+  },
+  // ⚠️ 공공디자인 진단시스템은 여기 넣지 않는다 — `pillars`의 `public` 축이 같은 사업이고,
+  //    거기에 더 자세한 과업 범위가 들어 있다. 둘 다 실으면 표에 같은 건이 두 번 나온다.
+  //    메일에서 새로 확인한 사실(2025-12-31 **선금보증보험** 발행 = 선금 수령)은
+  //    docs/portfolio-from-mail.md §1에 기록해 두었다.
+  {
+    title: 'AX-PBL 홈페이지 구축',
+    org: client('부산대학교', '국립대학교'),
+    period: '2026-07',
+    status: 'wip' as const,
+    kind: 'platform',
+    evidence: '계약' as Evidence,
+    // 거점 사이트군 4개 중 하나이지만 별건 수의계약이라 따로 센다.
+    note: '수의계약 · 거점 사이트군 중 1건',
+    scale: '3,139,000원',
+  },
+  {
+    title: '학석사연계과정 홈페이지 구축',
+    org: client('부산대학교', '국립대학교'),
+    period: '2026-07',
+    status: 'wip' as const,
+    kind: 'platform',
+    evidence: '계약' as Evidence,
+    note: '수의계약 · 비교견적 1부',
+    scale: '3,139,000원',
+  },
+  {
+    title: 'SW교육강사양성 프로그램 운영 대행',
+    org: client('동아대학교 산학협력단', '사립대학교 산학협력단'),
+    period: '2025',
+    status: 'done' as const,
+    kind: 'education',
+    evidence: '계약' as Evidence,
+    note: '발주서 · 과업지시서',
+    scale: '',
+  },
+  {
+    title: 'SW 온라인 멘토링 프로그램 운영',
+    org: client('동아대학교 산학협력단', '사립대학교 산학협력단'),
+    period: '2026',
+    status: 'wip' as const,
+    kind: 'education',
+    evidence: '계약' as Evidence,
+    note: '발주서',
+    scale: '멘토 20명 이상 운영',
+  },
+  {
+    title: '피지컬 AI 시스템 개발 프로젝트 교육',
+    org: client('국립부경대학교 SW융합혁신원', '국립대학교 SW융합원'),
+    period: '2026-07',
+    status: 'wip' as const,
+    kind: 'education',
+    evidence: '계약' as Evidence,
+    note: '계약 서류 회신 · 계약일자 협의',
+    scale: '2개 과정',
+  },
+  {
+    title: '클릭온 AI 파일럿 테스트',
+    org: client('마이스플랜즈', '행사 운영 대행사'),
+    period: '2026-05',
+    status: 'done' as const,
+    kind: 'platform',
+    evidence: '수행' as Evidence,
+    note: '완료보고 · 산출물 제출',
+    scale: '보고서 136부 (목표 93회 초과)',
+  },
+  {
+    title: 'AI퀴즈대회 문항 검수',
+    org: client('마이스플랜즈', '행사 운영 대행사'),
+    period: '2026-05~06',
+    status: 'done' as const,
+    kind: 'platform',
+    evidence: '수행' as Evidence,
+    note: '다차 검수 회신 6회',
+    scale: '3000–8050번 구간',
+  },
+  {
+    title: '해돋움 중학 연산 앱 개발·유지보수',
+    org: client('부산광역시교육연구정보원', '광역시 교육연구정보원'),
+    period: '2025–26',
+    status: 'live' as const,
+    kind: 'platform',
+    evidence: '청구' as Evidence,
+    note: 'Google Play 배포 · 유지보수 청구',
+    scale: '',
+  },
+  {
+    title: '웨어러블 AI 엣지 컴퓨팅 프로젝트',
+    org: client('부산대학교 공학교육혁신센터', '국립대학교 공학교육혁신센터'),
+    period: '2024–25',
+    status: 'done' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '단기·중장기 2개 트랙 연속 수행',
+    scale: '',
+  },
+  {
+    title: '창의설계활동 IoT 구현',
+    org: client('한국과학영재학교', 'KAIST 부설 영재학교'),
+    period: '2025–26',
+    status: 'wip' as const,
+    kind: 'education',
+    evidence: '청구' as Evidence,
+    note: '정규 학기 + 여름방학 특강 · 2년 연속',
+    scale: '',
+  },
+  {
+    title: '생성형 AI 실무 과정 (Gemini · Claude Code)',
+    org: client('(재)부산디자인진흥원', '광역시 디자인진흥원'),
+    period: '2026',
+    status: 'wip' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '사전 설문 기반 과정 설계',
+    scale: '6시간 과정',
+  },
+  {
+    title: 'BeAT 교사 연수',
+    org: client('부산광역시교육청', '광역시 교육청'),
+    period: '2026',
+    status: 'live' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '솔루션 공급사 위탁 · 주 2~3회',
+    scale: '',
+  },
+  {
+    title: '국어 교사 대상 생성형 AI 실무 연수',
+    org: client('경상남도교육청 교육연수원', '도 교육청 연수원'),
+    period: '2026-08',
+    status: 'wip' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '컨텍스트 엔지니어링 · MCP · 수업도구 제작',
+    scale: '6시간 과정',
+  },
+  {
+    title: 'AI 리터러시 교육 (공업고 연계)',
+    org: client('국립부경대학교 SW융합혁신원', '국립대학교 SW융합원'),
+    period: '2026',
+    status: 'done' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '커리큘럼 제안부터 운영까지',
+    scale: '',
+  },
+  {
+    title: '실버 온라인 판매채널 구축·마케팅 실무',
+    org: client('부산예일직업전문학교', '직업전문학교'),
+    period: '2025',
+    status: 'done' as const,
+    kind: 'education',
+    evidence: '강의' as Evidence,
+    note: '웹화면구현 · 웹프로그래밍 · DB 전 과정',
+    scale: '',
+  },
+  {
+    title: '모두의 코딩 · 찾아가는 미래직업 메이커 체험',
+    org: client('부산광역시북부교육지원청', '교육지원청'),
+    period: '2025',
+    status: 'done' as const,
+    kind: 'education',
+    evidence: '청구' as Evidence,
+    note: '관내 중학교 순회 운영',
+    scale: '',
+  },
+] as const;
+
+/** 근거 등급별 표기 */
+export const evidenceLabel: Record<Evidence, string> = {
+  계약: '계약 확인',
+  청구: '세금계산서 발행',
+  수행: '완료보고',
+  강의: '강사료 지급 확인',
+};
+
+/**
+ * 세금계산서를 발행한 거래처 수 — 실적 규모를 말할 때 가장 다투기 어려운 숫자다.
+ * 출처: 홈택스 발행 알림 20건 (2025-02 ~ 2026-06), `docs/portfolio-from-mail.md` §2
+ */
+export const billingSummary = {
+  count: 20,
+  publicCount: 14,
+  privateCount: 6,
+  from: '2025-02',
+  to: '2026-06',
+  label: '세금계산서 발행 거래처',
+  source: '홈택스 발행 알림',
+} as const;
+
 /** 실적 로그 대시보드 문구 */
 export const workLog = {
   labelKo: '진행 상황',

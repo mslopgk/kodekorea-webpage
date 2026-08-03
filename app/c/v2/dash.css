@@ -57,7 +57,7 @@
   border-radius: 50%;
   background: #46ba67;
   color: rgba(70, 186, 103, 0.55);
-  animation: v2-beat 2s ease-out infinite;
+  animation: v2-beat 3.1s ease-out infinite;
 }
 .v2-clock em {
   font-style: normal;
@@ -73,7 +73,7 @@
   border-radius: 50%;
   background: var(--accent);
   color: rgba(255, 77, 23, 0.5);
-  animation: v2-beat 1.6s ease-out infinite;
+  animation: v2-beat 2.6s ease-out infinite;
 }
 @keyframes v2-beat {
   0% {
@@ -276,14 +276,14 @@
 .v2-log__status[data-s="live"] i {
   background: #46ba67;
   color: rgba(70, 186, 103, 0.5);
-  animation: v2-beat 2.4s ease-out infinite;
-  animation-delay: calc(var(--i, 0) * 260ms);
+  animation: v2-beat 3.7s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 410ms);
 }
 .v2-log__status[data-s="wip"] i {
   background: var(--accent);
   color: rgba(255, 77, 23, 0.5);
-  animation: v2-beat 1.8s ease-out infinite;
-  animation-delay: calc(var(--i, 0) * 260ms);
+  animation: v2-beat 2.9s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 410ms);
 }
 .v2-log__status[data-s="done"] i {
   background: var(--fg-faint);

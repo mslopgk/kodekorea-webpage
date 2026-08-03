@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { pillars } from '@/content/site';
+import { evidenceLabel, pillars, portfolio } from '@/content/site';
 
 /**
  * 포트폴리오 게시물 저장소.
@@ -48,14 +48,32 @@ export const STATUS_LABEL: Record<Status, string> = {
   done: '완료',
 };
 
-/** 사업축 3개를 대표 실적으로 씨드. 나머지는 사용자가 추가한다. */
-const seed: Post[] = pillars.map((p, i) => ({
+/**
+ * 씨드 = 사업축 대표 3건 + 메일 원장에서 확인한 실적 전부.
+ *
+ * 이전에는 사업축 3개만 씨드였다. 회사 메일 6,305통을 훑어 계약서·발주서·보증보험·
+ * 세금계산서·완료보고 중 하나 이상이 확인된 건을 `content/site.ts`의 `portfolio`로
+ * 정리했고, 여기서 그대로 읽는다. 근거 등급이 `metricLabel`에 그대로 노출되므로
+ * 표를 보는 사람이 "왜 이걸 실적이라 하는지"를 바로 확인할 수 있다.
+ *
+ * 씨드는 모두 `locked` — 실수로 실적을 지우는 것을 막는다.
+ */
+/** 분류별 연번을 붙인다 — W/xx, A/xx, S/xx */
+const PREFIX: Record<Category, string> = { platform: 'W', education: 'A', public: 'S' };
+const counter: Record<Category, number> = { platform: 0, education: 0, public: 0 };
+const nextCode = (c: Category) => `${PREFIX[c]}/${String(++counter[c]).padStart(2, '0')}`;
+
+const pillarSeed: Post[] = pillars.map((p, i) => ({
   id: `seed-${p.id}`,
-  code: p.code,
+  /**
+   * 사업축의 `p.code`(W/01·A/02·S/03)는 **전체 순번**이라 분류별 연번과 겹친다.
+   * 표 안에서는 분류별로 다시 번호를 매겨야 W/01,A/01,S/01,W/02… 로 충돌 없이 읽힌다.
+   */
+  code: nextCode(p.id as Category),
   title: p.project.name,
   client: p.project.client,
   category: p.id as Category,
-  status: i === 0 ? "live" : "wip",
+  status: i === 0 ? 'live' : 'wip',
   period: p.project.period,
   summary: p.project.subtitle,
   metric: p.project.metrics[0].value + p.project.metrics[0].unit,
@@ -63,6 +81,27 @@ const seed: Post[] = pillars.map((p, i) => ({
   stack: [...p.project.stack],
   locked: true,
 }));
+
+const mailSeed: Post[] = portfolio.map((w, i) => {
+  const category = w.kind as Category;
+  return {
+    id: `mail-${i}`,
+    code: nextCode(category),
+    title: w.title,
+    client: w.org,
+    category,
+    status: w.status as Status,
+    period: w.period,
+    summary: w.note,
+    // 금액·규모가 확인된 건만 지표를 채운다. 없으면 근거 등급 자체가 지표다.
+    metric: w.scale || w.evidence,
+    metricLabel: evidenceLabel[w.evidence],
+    stack: [],
+    locked: true,
+  };
+});
+
+const seed: Post[] = [...pillarSeed, ...mailSeed];
 
 const KEY = 'kk.works.v1';
 

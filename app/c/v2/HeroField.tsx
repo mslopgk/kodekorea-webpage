@@ -54,7 +54,7 @@ export function HeroField() {
       const ox = cols * 0.74;
       const oy = rows * 0.52;
       const R = Math.min(cols, rows) * 0.52;
-      const t = time * 0.00016;
+      const t = time * 0.00010;
 
       for (let gy = 0; gy < rows; gy++) {
         for (let gx = 0; gx < cols; gx++) {

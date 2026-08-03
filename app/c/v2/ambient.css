@@ -69,7 +69,7 @@
   margin-left: 0.16em;
   background: var(--accent);
   vertical-align: baseline;
-  animation: v2-blink 1.05s steps(1) infinite;
+  animation: v2-blink 1.35s steps(1) infinite;
 }
 @keyframes v2-blink {
   0%,
@@ -106,6 +106,47 @@
   position: relative;
 }
 
+/* 세금계산서 발행 거래처 수 — 실적 헤더 오른쪽에 붙는 단일 수치 */
+.v2-billing {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin-left: auto;
+  text-align: right;
+}
+.v2-billing__n {
+  font-family: var(--font-mono);
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+.v2-billing__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28em;
+  max-width: 15ch;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: left;
+  opacity: 0.82;
+}
+.v2-billing__label em {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-style: normal;
+  letter-spacing: 0.03em;
+  opacity: 0.62;
+}
+@media (max-width: 720px) {
+  .v2-billing {
+    margin-left: 0;
+    margin-top: 1.4em;
+  }
+}
+
 
 /* ─────────────────────────────────────────────────────────────
    실제 내용이 도는 위젯 — 움직임 자체가 정보다
@@ -134,7 +175,7 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--fg);
-  animation: v2-swap 0.42s var(--ease-out-quint);
+  animation: v2-swap 0.6s var(--ease-out-quint);
 }
 .v2-rot__n {
   font-style: normal;
@@ -219,7 +260,7 @@
   transform: scale(1.35);
 }
 .v2-sitecyc__body {
-  animation: v2-swap 0.45s var(--ease-out-quint);
+  animation: v2-swap 0.62s var(--ease-out-quint);
   min-width: 0;
 }
 .v2-sitecyc__body b {
@@ -261,7 +302,7 @@
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   min-height: 56px;
-  animation: v2-swap 0.45s var(--ease-out-quint);
+  animation: v2-swap 0.62s var(--ease-out-quint);
 }
 .v2-workcyc__year {
   font-family: var(--font-mono);

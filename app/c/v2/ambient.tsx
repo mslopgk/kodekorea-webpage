@@ -109,7 +109,7 @@ export function Wave({
 }) {
   const ref = useCanvas(
     (ctx, w, h, time) => {
-      const t = time * 0.00105;
+      const t = time * 0.00058;
       ctx.strokeStyle = accent ? 'rgba(255,77,23,0.8)' : 'rgba(255,255,255,0.34)';
       ctx.lineWidth = 1.1;
       ctx.beginPath();
@@ -139,7 +139,7 @@ export function Wave({
 }
 
 /* ── 티커 ── 흐르는 것이 실제 기술 영역 목록이므로 내용이 정보다. */
-export function Ticker({ items, speed = 0.026 }: { items: readonly string[]; speed?: number }) {
+export function Ticker({ items, speed = 0.011 }: { items: readonly string[]; speed?: number }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement | null>(null);
 

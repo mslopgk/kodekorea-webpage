@@ -88,7 +88,7 @@ export function Signal() {
 
     const loop = () => {
       raf = 0;
-      t += 0.045;
+      t += 0.021;
       render();
       if (running) raf = requestAnimationFrame(loop);
     };

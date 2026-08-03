@@ -1,4 +1,5 @@
 import {
+  billingSummary,
   capability,
   clients,
   company,
@@ -138,11 +139,11 @@ export function V2Page() {
                     {/* 축마다 실제 범위가 계속 돈다 — 움직임 자체가 정보다 */}
                     <div className="v2-pillar__live">
                       {p.id === 'public' ? (
-                        <Rotate label="진단영역" items={diagnosisAreas} periodMs={1700} />
+                        <Rotate label="진단영역" items={diagnosisAreas} periodMs={2900} />
                       ) : p.id === 'education' ? (
-                        <Rotate label="검증 실적" items={verifiedWork.map((v) => v.title)} periodMs={2400} />
+                        <Rotate label="검증 실적" items={verifiedWork.map((v) => v.title)} periodMs={4100} />
                       ) : (
-                        <Rotate label="구축 사이트" items={hubSites.map((h) => h.name)} periodMs={2400} />
+                        <Rotate label="구축 사이트" items={hubSites.map((h) => h.name)} periodMs={3700} />
                       )}
                     </div>
                   </div>
@@ -175,7 +176,7 @@ export function V2Page() {
               ) : p.id === 'education' ? (
                 <WorkCycle items={verifiedWork} />
               ) : (
-                <Sweep items={districts} mark={pilotDistrict} periodMs={780} />
+                <Sweep items={districts} mark={pilotDistrict} periodMs={1450} />
               )}
 
 
@@ -229,6 +230,19 @@ export function V2Page() {
                   <Wipe>{workLog.labelKo}</Wipe>
                 </h2>
               </div>
+              {/* 회사 메일 원장에서 센 숫자다. 세금계산서는 대금을 청구했다는
+                  뜻이라 "협업했다"보다 다투기 어렵다. 근거는
+                  docs/portfolio-from-mail.md §2. */}
+              <Rev className="v2-billing" delay={120}>
+                <b className="v2-billing__n">{billingSummary.count}</b>
+                <span className="v2-billing__label">
+                  {billingSummary.label}
+                  <em>
+                    공공·교육 {billingSummary.publicCount} · 민간 {billingSummary.privateCount} ·{' '}
+                    {billingSummary.from}~{billingSummary.to}
+                  </em>
+                </span>
+              </Rev>
             </div>
             <Signal />
             <Dashboard />
@@ -271,7 +285,7 @@ export function V2Page() {
 
             <div style={{ marginTop: 'clamp(56px, 9vh, 120px)' }}>
               <p className="v2-eyebrow">Domains</p>
-              <Ticker items={domains} speed={0.02} />
+              <Ticker items={domains} speed={0.009} />
               <ul className="v2-domains">
                 {domains.map((d, i) => (
                   <Rev as="li" key={d} delay={Math.min(i * 26, 420)}>
