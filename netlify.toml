@@ -5,9 +5,36 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# 아직 확정 전 디자인 시안이므로 검색엔진 색인을 막는다.
-# 실물 사이트로 확정되면 이 블록을 삭제한다.
+# next.config의 `output: 'export'`로 정적 산출물만 만든다.
+# @netlify/plugin-nextjs는 SSR/이미지 최적화를 위해 붙는 플러그인인데
+# 정적 export에는 할 일이 없고 `/_next/image` 리다이렉트만 심는다.
+# CLI 배포는 `--no-build --dir=out`으로 미리 빌드한 결과를 그대로 올린다.
+
+# ── 헤더는 vercel.json과 서버 Caddyfile과 같은 값으로 맞춘다 ──
+# 세 곳이 다르면 어디서 본 사이트냐에 따라 캐시·색인 동작이 갈린다.
+
+# 파일명에 내용해시가 들어가므로 영구 캐시해도 안전하다.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 실적 캡처 이미지 — 교체 가능성이 있어 1주일만 캐시한다.
+[[headers]]
+  for = "/work/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
 [[headers]]
   for = "/*"
   [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    # ⚠️ 색인 차단 — 지우기 전에 확인할 것 (docs/hosting.md의 체크리스트와 동일)
+    #    · 개인정보처리방침 (아직 없음)
+    #    · 클라이언트 실명 노출 동의 (현재 ANONYMIZE = true로 마스킹 중)
+    #    · 브랜드 컬러·로고 확정 (현재 액센트는 임의값)
+    #    kodekorea.kr 정식 도메인이 따로 있으므로 이 netlify.app 주소는
+    #    확정 후에도 색인시킬 이유가 없다.
     X-Robots-Tag = "noindex, nofollow"
