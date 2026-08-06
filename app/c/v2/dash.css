@@ -214,6 +214,113 @@
   color: var(--accent);
   letter-spacing: 0.06em;
 }
+
+/* ── 상세로 가는 손잡이 ──
+   제목 전체가 링크다. 행 안에서 유일한 주요 동작이므로 별도 버튼을 두지 않는다. */
+.v2-log__link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  color: inherit;
+  text-decoration: none;
+  /* 버튼으로 쓰일 때 기본 스타일을 지운다 */
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.28s;
+}
+.v2-log__link:hover,
+.v2-log__link:focus-visible {
+  color: var(--accent);
+}
+.v2-log__more {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.28s, transform 0.28s var(--ease-out-quint);
+}
+.v2-log__row:hover .v2-log__more,
+.v2-log__link:focus-visible .v2-log__more,
+.v2-log__row[data-open] .v2-log__more {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── 인라인 상세 (직접 추가한 항목 전용) ──
+   7열 그리드의 8번째 자녀라서 명시적으로 전체 폭을 차지하게 해야 한다. */
+.v2-log__detail {
+  grid-column: 1 / -1;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--accent) 3%, transparent);
+  animation: v2-detail 0.42s var(--ease-out-quint);
+}
+@keyframes v2-detail {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.v2-log__detail dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 22px;
+  margin: 0;
+}
+.v2-log__detail dt {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.v2-log__detail dd {
+  margin: 5px 0 0;
+  font-size: 0.86rem;
+  letter-spacing: -0.005em;
+}
+.v2-log__detail > p {
+  margin: 14px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  max-width: 68ch;
+}
+.v2-log__detail ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 7px;
+}
+.v2-log__detail ul li {
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--fg-dim);
+}
+.v2-log__detailnote {
+  margin-top: 14px !important;
+  font-size: 0.74rem !important;
+  color: var(--fg-faint);
+}
+
 .v2-log__title b {
   display: block;
   font-size: clamp(1rem, 1.7vw, 1.3rem);
@@ -404,6 +511,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .v2-log__detail {
+    animation: none !important;
+  }
+  .v2-log__more,
+  .v2-log__link {
+    transition: none !important;
+  }
+  .v2-log__more {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   .v2-clock i,
   .v2-pulse,
   .v2-log__status i {

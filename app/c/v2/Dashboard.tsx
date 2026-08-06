@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useReducedMotion } from '@/lib/motion';
+import { projectPath } from '@/content/projects';
 import {
   CATEGORY_LABEL,
   STATUS_LABEL,
@@ -116,14 +118,39 @@ export function Dashboard() {
 
 function Row({ post, index, onRemove }: { post: Post; index: number; onRemove: () => void }) {
   const [confirming, setConfirming] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <div className="v2-log__row" role="row" style={{ ['--i' as string]: index }}>
+    <div className="v2-log__row" role="row" style={{ ['--i' as string]: index }} data-open={open || undefined}>
       <span className="v2-log__code" role="cell">
         {post.code}
       </span>
       <span className="v2-log__title" role="cell">
-        <b>{post.title}</b>
+        {/*
+          씨드 실적은 정적 상세 페이지가 있어 링크로 간다 — 견적서에 붙여 보낼 수 있는
+          주소가 생기는 게 이 구조의 이유다. 사용자가 추가한 항목은 localStorage에만
+          있어 페이지를 만들 수 없으므로 같은 자리에서 펼친다.
+        */}
+        {post.slug ? (
+          <Link href={projectPath(post.slug)} className="v2-log__link">
+            <b>{post.title}</b>
+            <span className="v2-log__more" aria-hidden="true">
+              {workLog.detailKo}
+            </span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className="v2-log__link v2-log__link--btn"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <b>{post.title}</b>
+            <span className="v2-log__more" aria-hidden="true">
+              {open ? workLog.closeKo : workLog.detailKo}
+            </span>
+          </button>
+        )}
         <em>{post.summary}</em>
         <span className="v2-log__stack">{post.stack.join(' · ')}</span>
       </span>
@@ -166,6 +193,35 @@ function Row({ post, index, onRemove }: { post: Post; index: number; onRemove: (
           </button>
         )}
       </span>
+
+      {/* 사용자 추가 항목의 인라인 상세 — 입력한 값만 보여준다 */}
+      {open && (
+        <div className="v2-log__detail" role="cell">
+          <dl>
+            <div>
+              <dt>{workLog.cols.client}</dt>
+              <dd>{post.client || '—'}</dd>
+            </div>
+            <div>
+              <dt>{workLog.cols.period}</dt>
+              <dd>{post.period || '—'}</dd>
+            </div>
+            <div>
+              <dt>{workLog.cols.metric}</dt>
+              <dd>{post.metric ? `${post.metric} · ${post.metricLabel}` : '—'}</dd>
+            </div>
+          </dl>
+          {post.summary && <p>{post.summary}</p>}
+          {post.stack.length > 0 && (
+            <ul>
+              {post.stack.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+          )}
+          <p className="v2-log__detailnote">{workLog.localOnlyKo}</p>
+        </div>
+      )}
     </div>
   );
 }

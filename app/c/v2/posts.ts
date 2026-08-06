@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { evidenceLabel, pillars, portfolio } from '@/content/site';
+import { categoryText, evidenceLabel, pillars, portfolio, statusText } from '@/content/site';
 
 /**
  * 포트폴리오 게시물 저장소.
@@ -34,19 +34,17 @@ export type Post = {
   stack: string[];
   /** 씨드 데이터는 지울 수 없게 표시 — 실수로 실적을 날리는 것을 막는다 */
   locked?: boolean;
+  /**
+   * 상세 페이지 주소의 slug. 씨드에만 있다.
+   * 사용자가 대시보드에서 추가한 항목은 localStorage에만 존재해서 정적 페이지를
+   * 만들 수 없으므로 slug가 없고, 표에서 펼쳐 보는 방식으로 대체한다.
+   */
+  slug?: string;
 };
 
-export const CATEGORY_LABEL: Record<Category, string> = {
-  public: '공공 시스템',
-  education: 'AI 교육',
-  platform: '플랫폼',
-};
-
-export const STATUS_LABEL: Record<Status, string> = {
-  live: '운영 중',
-  wip: '진행 중',
-  done: '완료',
-};
+// 라벨의 단일 소스는 content/site.ts다 (서버 컴포넌트도 같은 값을 써야 한다).
+export const CATEGORY_LABEL: Record<Category, string> = categoryText;
+export const STATUS_LABEL: Record<Status, string> = statusText;
 
 /**
  * 씨드 = 사업축 대표 3건 + 메일 원장에서 확인한 실적 전부.
@@ -70,6 +68,7 @@ const pillarSeed: Post[] = pillars.map((p, i) => ({
    * 표 안에서는 분류별로 다시 번호를 매겨야 W/01,A/01,S/01,W/02… 로 충돌 없이 읽힌다.
    */
   code: nextCode(p.id as Category),
+  slug: p.slug,
   title: p.project.name,
   client: p.project.client,
   category: p.id as Category,
@@ -87,6 +86,7 @@ const mailSeed: Post[] = portfolio.map((w, i) => {
   return {
     id: `mail-${i}`,
     code: nextCode(category),
+    slug: w.slug,
     title: w.title,
     client: w.org,
     category,
