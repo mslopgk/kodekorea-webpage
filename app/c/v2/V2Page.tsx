@@ -1,6 +1,8 @@
 import {
   billingSummary,
   capability,
+  prototyping,
+  protoNav,
   clients,
   company,
   cta,
@@ -48,8 +50,10 @@ export function V2Page() {
           {company.nameKo}
           <span>{company.baseEn}</span>
         </a>
-        <nav className="v2-topnav" aria-label={nav[0].labelKo}>
-          {nav.map((n) => (
+        {/* 프로토타입을 맨 앞에 붙인다. `nav` 배열 자체에 끼우지 않는 이유는
+            content/site.ts의 protoNav 주석 참고 (옛 시안 페이지들이 위치 참조). */}
+        <nav className="v2-topnav" aria-label="주요 메뉴">
+          {[protoNav, ...nav].map((n) => (
             <a key={n.href} href={n.href}>
               {n.labelEn}
             </a>
@@ -96,6 +100,61 @@ export function V2Page() {
                 <span>{cta.primaryEn}</span>
               </span>
             </a>
+          </div>
+        </section>
+
+        {/* ── 창업팀 프로토타입 ──
+            대표 지시로 히어로 바로 아래에 둔다. 링크를 받은 사람이 스크롤하지 않아도
+            이게 먼저 읽혀야 한다. 실적이 아니라 **서비스 선언**이므로 실적 영역과
+            분리하고, 근거로 댈 수 있는 것만 아래 판독값으로 붙인다. */}
+        <section className="v2-sec v2-proto" id="prototype">
+          <div className="v2-shell">
+            <div className="v2-proto__head">
+              <div>
+                <p className="v2-eyebrow">{prototyping.labelEn}</p>
+                <h2 className="v2-proto__title">
+                  <Wipe>{prototyping.labelKo}</Wipe>
+                </h2>
+                <Rev as="p" className="v2-proto__tag" delay={80}>
+                  {prototyping.taglineKo}
+                  <Caret />
+                </Rev>
+              </div>
+              <div className="v2-proto__copy">
+                <Rev as="p" className="v2-proto__lede" delay={120}>
+                  {prototyping.lede}
+                </Rev>
+                <Rev as="p" className="v2-pillar__body" delay={180}>
+                  {prototyping.body}
+                </Rev>
+                <a className="v2-proto__cta" href="#contact">
+                  <span aria-hidden="true">→</span>
+                  {prototyping.ctaKo}
+                </a>
+              </div>
+            </div>
+
+            <ul className="v2-proto__items">
+              {prototyping.items.map((it, i) => (
+                <Rev as="li" key={it.title} delay={i * 70}>
+                  <b>{it.title}</b>
+                  <span>{it.detail}</span>
+                </Rev>
+              ))}
+            </ul>
+
+            <Wave variant="sine" height={26} />
+
+            {/* 근거 판독값 — 출처를 항상 같이 보여준다 */}
+            <ul className="v2-proto__basis">
+              {prototyping.basis.map((b, i) => (
+                <Rev as="li" key={b.label} delay={i * 80}>
+                  <b>{b.metric}</b>
+                  <span>{b.label}</span>
+                  <i>{b.source}</i>
+                </Rev>
+              ))}
+            </ul>
           </div>
         </section>
 

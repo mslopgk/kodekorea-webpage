@@ -381,3 +381,141 @@
   color: var(--accent);
   border-color: var(--accent);
 }
+
+/* ─────────────────────────────────────────────────────────────
+   창업팀 프로토타입 섹션.
+   히어로 직후 다크 구간이라 라이트 반전 전에 놓인다.
+   ───────────────────────────────────────────────────────────── */
+.v2-proto {
+  border-top: 1px solid var(--rule);
+}
+.v2-proto__head {
+  display: grid;
+  gap: clamp(26px, 4vw, 56px);
+}
+@media (min-width: 940px) {
+  .v2-proto__head {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+}
+.v2-proto__title {
+  margin: 0.16em 0 0;
+  font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  /* 한글은 라틴보다 덜 좁힌다 — 과하게 좁히면 뭉친다 */
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+.v2-proto__tag {
+  margin: 0.7em 0 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.5vw, 0.95rem);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+.v2-proto__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1em;
+}
+.v2-proto__lede {
+  margin: 0;
+  max-width: 54ch;
+  font-size: clamp(1rem, 1.8vw, 1.32rem);
+  line-height: 1.58;
+  letter-spacing: -0.016em;
+}
+.v2-proto__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: 0.4em;
+  padding: 11px 17px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+  transition: filter 0.24s;
+}
+.v2-proto__cta:hover,
+.v2-proto__cta:focus-visible {
+  filter: brightness(1.12);
+}
+
+/* 제공 항목 — 카드 갤러리가 아니라 규칙선으로 나눈 목록 */
+.v2-proto__items {
+  list-style: none;
+  margin: clamp(38px, 6vh, 76px) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+@media (min-width: 720px) {
+  .v2-proto__items {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1180px) {
+  .v2-proto__items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.v2-proto__items li {
+  background: var(--bg);
+  padding: 20px 18px;
+}
+.v2-proto__items b {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+}
+.v2-proto__items span {
+  display: block;
+  margin-top: 0.6em;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--fg-dim);
+}
+
+/* 근거 판독값 — 출처를 늘 붙인다 */
+.v2-proto__basis {
+  list-style: none;
+  margin: clamp(22px, 3.4vh, 40px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(164px, 1fr));
+  gap: clamp(18px, 3vw, 38px);
+}
+.v2-proto__basis b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+.v2-proto__basis span {
+  display: block;
+  margin-top: 0.6em;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.v2-proto__basis i {
+  display: block;
+  margin-top: 0.45em;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 9.5px;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  color: var(--fg-faint);
+}
